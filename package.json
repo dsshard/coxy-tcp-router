@@ -1,0 +1,27 @@
+{
+  "name": "@coxy/tcp-router",
+  "version": "1.0.0",
+  "description": "TCP router (net module) with aes & diffie-hellman",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "example:server": "ts-node src/example/server.ts",
+    "example:client": "ts-node src/example/client.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "17.0.23",
+    "@typescript-eslint/eslint-plugin": "5.17.0",
+    "@typescript-eslint/parser": "5.17.0",
+    "eslint": "7.32.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-promise": "6.0.0",
+    "ts-node": "10.7.0",
+    "typescript": "4.6.3"
+  }
+}
