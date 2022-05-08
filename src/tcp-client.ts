@@ -22,8 +22,8 @@ const defer = () => {
 }
 
 export class TcpClient extends BaseInterface {
-  private client: Socket;
-  private options: TcpClientOptions;
+  private readonly client: Socket;
+  private readonly options: TcpClientOptions;
   private dh: DiffieHellman;
   private secret = '';
   private connectListener: any = null;

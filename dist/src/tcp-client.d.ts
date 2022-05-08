@@ -8,8 +8,8 @@ export interface TcpClientOptions {
     requestTimeout?: number;
 }
 export declare class TcpClient extends BaseInterface {
-    private client;
-    private options;
+    private readonly client;
+    private readonly options;
     private dh;
     private secret;
     private connectListener;
