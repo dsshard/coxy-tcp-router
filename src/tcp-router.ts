@@ -10,6 +10,7 @@ export interface TcpRouterOptions {
   prefix?: string
   secret: string
   whitelist?: string[]
+  maxConnections?: number
 }
 
 export interface HandshakeInitialBody {
@@ -35,15 +36,20 @@ export class TcpRouter extends BaseInterface {
   private options: TcpRouterOptions;
   private routers: Pipeline<any>[] = []
   private dh: DiffieHellman;
+  private connectionsCount: number;
 
   constructor (options: TcpRouterOptions) {
     super()
     this.options = options
+    this.connectionsCount = 0
     this.server = createServer((socket) => this.handleSocket(socket))
   }
 
   public listen (callback?) {
     this.server.listen(this.options.port, this.options.host || undefined, callback)
+
+    this.on('close', () => { this.connectionsCount -= 1 })
+    this.on('connect', () => { this.connectionsCount += 1 })
   }
 
   protected getSecretKey (socket: Socket) {
@@ -55,11 +61,20 @@ export class TcpRouter extends BaseInterface {
 
     if (this.options.whitelist?.length) {
       if (!this.options.whitelist.includes(info.address)) {
-        this.emit('whitelist', socket)
+        this.emit('error:whitelist', socket)
         socket.end()
         return
       }
     }
+
+    if (this.options?.maxConnections) {
+      if (this.connectionsCount > this.options.maxConnections) {
+        this.emit('error:maxConnections', socket)
+        socket.end()
+        return
+      }
+    }
+
     this.handshake(socket)
   }
 
@@ -103,6 +118,7 @@ export class TcpRouter extends BaseInterface {
       response = this.decrypt(data, socket)
       this.emit('data', response?.body)
     } catch (error) {
+      this.emit('error:parse', socketData.toString())
       console.error('Failed', error.message)
       return
     }

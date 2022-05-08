@@ -30,11 +30,14 @@ run()
 
 ```javascript
 
+import { TcpRouter } from '../tcp-router'
+
 const router = new TcpRouter({
   port: 1337,
   host: '127.0.0.1',
   secret: 'supersecretstring',
-  whitelist: ['127.0.0.1']
+  whitelist: ['127.0.0.1'],
+  maxConnections: 1
 })
 
 router.on('connect', (socket) => {
@@ -43,7 +46,10 @@ router.on('connect', (socket) => {
 router.on('close', (socket) => {
   console.log('close', socket.address())
 })
-router.on('whitelist', (socket) => {
+router.on('error:whitelist', (socket) => {
+  console.log(socket.address())
+})
+router.on('error:maxConnections', (socket) => {
   console.log(socket.address())
 })
 
@@ -52,6 +58,7 @@ router.use('/app/test', async function (ctx, next) {
   next()
 })
 
-router.listen()
+void router.listen()
+
 
 ```

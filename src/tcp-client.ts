@@ -5,11 +5,11 @@ import { HandshakeInitialBody, RequestBody, ResponseBody } from './tcp-router'
 import { sha256 } from './crypto'
 
 export interface TcpClientOptions {
-  port: number,
+  port: number
   host?: string
-  secret: string,
+  secret: string
   autoReconnect?: boolean
-  timeoutReconnect?: number,
+  timeoutReconnect?: number
   requestTimeout?: number
 }
 
