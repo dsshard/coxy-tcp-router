@@ -1,6 +1,7 @@
 {
   "name": "@coxy/tcp-router",
   "version": "1.0.0",
+  "private": false,
   "description": "TCP router (net module) with aes & diffie-hellman",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
