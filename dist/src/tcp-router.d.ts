@@ -7,6 +7,7 @@ export interface TcpRouterOptions {
     prefix?: string;
     secret: string;
     whitelist?: string[];
+    maxConnections?: number;
 }
 export interface HandshakeInitialBody {
     [n: number]: string;
@@ -27,6 +28,7 @@ export declare class TcpRouter extends BaseInterface {
     private options;
     private routers;
     private dh;
+    private connectionsCount;
     constructor(options: TcpRouterOptions);
     listen(callback?: any): void;
     protected getSecretKey(socket: Socket): string;

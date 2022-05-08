@@ -14,20 +14,30 @@ class TcpRouter extends interface_1.BaseInterface {
         super();
         this.routers = [];
         this.options = options;
+        this.connectionsCount = 0;
         this.server = (0, net_1.createServer)((socket) => this.handleSocket(socket));
     }
     listen(callback) {
         this.server.listen(this.options.port, this.options.host || undefined, callback);
+        this.on('close', () => { this.connectionsCount -= 1; });
+        this.on('connect', () => { this.connectionsCount += 1; });
     }
     getSecretKey(socket) {
         return `${this.options.secret}${(socket === null || socket === void 0 ? void 0 : socket.secret) || ''}`;
     }
     async handleSocket(socket) {
-        var _a;
+        var _a, _b;
         const info = socket.address();
         if ((_a = this.options.whitelist) === null || _a === void 0 ? void 0 : _a.length) {
             if (!this.options.whitelist.includes(info.address)) {
-                this.emit('whitelist', socket);
+                this.emit('error:whitelist', socket);
+                socket.end();
+                return;
+            }
+        }
+        if ((_b = this.options) === null || _b === void 0 ? void 0 : _b.maxConnections) {
+            if (this.connectionsCount > this.options.maxConnections) {
+                this.emit('error:maxConnections', socket);
                 socket.end();
                 return;
             }
@@ -69,6 +79,7 @@ class TcpRouter extends interface_1.BaseInterface {
             this.emit('data', response === null || response === void 0 ? void 0 : response.body);
         }
         catch (error) {
+            this.emit('error:parse', socketData.toString());
             console.error('Failed', error.message);
             return;
         }
