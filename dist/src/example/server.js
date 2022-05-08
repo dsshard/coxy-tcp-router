@@ -21,6 +21,7 @@ router.on('error:maxConnections', (socket) => {
     console.log(socket.address());
 });
 router.use('/app/test', async function (ctx, next) {
+    console.log(ctx.request);
     ctx.body = 'test';
     next();
 });

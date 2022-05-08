@@ -106,9 +106,9 @@ class TcpClient extends interface_1.BaseInterface {
         const maxTime = this.options.requestTimeout || 10000;
         for (const uuid in this.stack) {
             const item = this.stack[uuid];
-            if (item.time + maxTime > Date.now()) {
-                this.stack[item.uuid].defer.reject('timeout');
-                delete this.stack[item.uuid];
+            if (item.time + maxTime < Date.now()) {
+                this.stack[uuid].defer.reject('timeout');
+                delete this.stack[uuid];
             }
         }
         if ((response === null || response === void 0 ? void 0 : response.uuid) && this.stack[response.uuid]) {

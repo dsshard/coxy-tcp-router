@@ -133,9 +133,9 @@ export class TcpClient extends BaseInterface {
 
     for (const uuid in this.stack) {
       const item = this.stack[uuid]
-      if (item.time + maxTime > Date.now()) {
-        this.stack[item.uuid].defer.reject('timeout')
-        delete this.stack[item.uuid]
+      if (item.time + maxTime < Date.now()) {
+        this.stack[uuid].defer.reject('timeout')
+        delete this.stack[uuid]
       }
     }
 

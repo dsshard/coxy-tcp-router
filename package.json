@@ -10,6 +10,9 @@
     "example:server": "ts-node src/example/server.ts",
     "example:client": "ts-node src/example/client.ts"
   },
+  "repository": {
+    "url": "https://github.com/dsshard/tcp-router"
+  },
   "keywords": [],
   "author": "",
   "license": "MIT",

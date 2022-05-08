@@ -72,28 +72,28 @@ class TcpRouter extends interface_1.BaseInterface {
         });
     }
     async handleSocketData(socketData, socket) {
-        let response = null;
+        let request = null;
         try {
             const data = socketData.toString();
-            response = this.decrypt(data, socket);
-            this.emit('data', response === null || response === void 0 ? void 0 : response.body);
+            request = this.decrypt(data, socket);
+            this.emit('data', request === null || request === void 0 ? void 0 : request.body);
         }
         catch (error) {
             this.emit('error:parse', socketData.toString());
             console.error('Failed', error.message);
             return;
         }
-        if (!response) {
-            console.error('Failed', 'response is empty');
+        if (!request) {
+            console.error('Failed', 'request is empty');
             return;
         }
-        const router = this.routers[response.rout];
+        const router = this.routers[request.rout];
         let body;
         if (router) {
-            const result = await router.execute({ body: response.body });
+            const result = await router.execute({ request: request.body, rout: request.rout });
             body = result === null || result === void 0 ? void 0 : result.body;
         }
-        let res = JSON.stringify({ body, uuid: response.uuid });
+        let res = JSON.stringify({ body, uuid: request.uuid });
         res = this.encrypt(res, socket);
         socket.write(res);
     }

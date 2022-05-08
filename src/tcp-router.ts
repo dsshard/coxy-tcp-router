@@ -112,31 +112,31 @@ export class TcpRouter extends BaseInterface {
   }
 
   private async handleSocketData (socketData: Buffer, socket: Socket) {
-    let response = null
+    let request = null
     try {
       const data = socketData.toString()
-      response = this.decrypt(data, socket)
-      this.emit('data', response?.body)
+      request = this.decrypt(data, socket)
+      this.emit('data', request?.body)
     } catch (error) {
       this.emit('error:parse', socketData.toString())
       console.error('Failed', error.message)
       return
     }
 
-    if (!response) {
-      console.error('Failed', 'response is empty')
+    if (!request) {
+      console.error('Failed', 'request is empty')
       return
     }
 
-    const router = this.routers[response.rout]
+    const router = this.routers[request.rout]
     let body
 
     if (router) {
-      const result = await router.execute({ body: response.body })
+      const result = await router.execute({ request: request.body, rout: request.rout })
       body = result?.body
     }
 
-    let res = JSON.stringify(<ResponseBody>{ body, uuid: response.uuid })
+    let res = JSON.stringify(<ResponseBody>{ body, uuid: request.uuid })
     res = this.encrypt(res, socket)
     socket.write(res)
   }
