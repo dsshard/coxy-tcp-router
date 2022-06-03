@@ -35,8 +35,8 @@ export class TcpRouter extends BaseInterface {
   private server: Server;
   private options: TcpRouterOptions;
   private routers: Pipeline<any>[] = []
-  private dh: DiffieHellman;
   private connectionsCount: number;
+  private dh: DiffieHellman;
 
   constructor (options: TcpRouterOptions) {
     super()
