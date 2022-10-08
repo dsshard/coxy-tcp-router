@@ -1,9 +1,10 @@
-import EventEmitter from 'events'
 import { Aes256 } from '@coxy/aes-256'
+
+import EventEmitter from 'events'
 import { Socket } from 'net'
 
 export class BaseInterface extends EventEmitter {
-  private aes: Aes256;
+  private aes: Aes256
   constructor () {
     super()
     this.aes = new Aes256('5c5376807c3259c4cc6bdae907c1167686bdae905ac531163259c4cc7c3259c4cc')

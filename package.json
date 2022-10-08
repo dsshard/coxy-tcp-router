@@ -3,8 +3,8 @@
   "version": "1.0.2",
   "private": false,
   "description": "TCP router (net module) with aes & diffie-hellman",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "example:server": "ts-node src/example/server.ts",
@@ -14,21 +14,23 @@
     "url": "https://github.com/dsshard/tcp-router"
   },
   "keywords": [],
-  "author": "",
+  "author": "Steven Green",
   "license": "MIT",
   "devDependencies": {
-    "@types/node": "17.0.39",
-    "@typescript-eslint/eslint-plugin": "5.27.0",
-    "@typescript-eslint/parser": "5.27.0",
-    "eslint": "7.32.0",
-    "eslint-config-standard": "16.0.3",
+    "@coxy/eslint-config": "1.0.6",
+    "@types/node": "18.8.3",
+    "@typescript-eslint/eslint-plugin": "5.*",
+    "@typescript-eslint/parser": "5.*",
+    "eslint": "8.25.0",
+    "eslint-config-standard": "17.0.0",
     "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-node": "11.1.0",
-    "eslint-plugin-promise": "6.0.0",
-    "ts-node": "10.8.0",
-    "typescript": "4.7.2"
+    "eslint-plugin-filename-rules": "1.2.0",
+    "eslint-plugin-n": "15.3.0",
+    "eslint-plugin-promise": "6.0.1",
+    "ts-node": "10.9.1",
+    "typescript": "4.8.4"
   },
   "dependencies": {
-    "@coxy/aes-256": "1.0.2"
+    "@coxy/aes-256": "2.0.1"
   }
 }

@@ -27,8 +27,8 @@ export declare class TcpRouter extends BaseInterface {
     private server;
     private options;
     private routers;
-    private dh;
     private connectionsCount;
+    private dh;
     constructor(options: TcpRouterOptions);
     listen(callback?: any): void;
     protected getSecretKey(socket: Socket): string;

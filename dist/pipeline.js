@@ -15,9 +15,7 @@ function Pipeline(...middlewares) {
             prevIndex = index;
             const middleware = stack[index];
             if (middleware) {
-                await middleware(context, () => {
-                    return runner(index + 1);
-                });
+                await middleware(context, () => runner(index + 1));
             }
         };
         await runner(0);

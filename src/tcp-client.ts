@@ -1,5 +1,6 @@
 import { Socket } from 'net'
 import crypto, { DiffieHellman } from 'crypto'
+
 import { BaseInterface } from './interface'
 import { HandshakeInitialBody, RequestBody, ResponseBody } from './tcp-router'
 import { sha256 } from './crypto'
@@ -22,13 +23,13 @@ const defer = () => {
 }
 
 export class TcpClient extends BaseInterface {
-  private readonly client: Socket;
-  private readonly options: TcpClientOptions;
-  private dh: DiffieHellman;
-  private secret = '';
-  private connectListener: any = null;
+  private readonly client: Socket
+  private readonly options: TcpClientOptions
+  private dh: DiffieHellman
+  private secret = ''
+  private connectListener: any = null
   private stack: any = {}
-  private isClosed = false;
+  private isClosed = false
 
   constructor (options: TcpClientOptions) {
     super()
@@ -47,7 +48,7 @@ export class TcpClient extends BaseInterface {
   }
 
   public async connect () {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       if (this.connectListener) {
         this.client.removeListener('connect', this.connectListener)
       }

@@ -27,9 +27,7 @@ export function Pipeline<T> (...middlewares: Middleware<T>[]): Pipeline<T> {
       const middleware = stack[index]
 
       if (middleware) {
-        await middleware(context, () => {
-          return runner(index + 1)
-        })
+        await middleware(context, () => runner(index + 1))
       }
     }
 

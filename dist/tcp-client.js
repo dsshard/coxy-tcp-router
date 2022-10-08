@@ -32,7 +32,7 @@ class TcpClient extends interface_1.BaseInterface {
         });
     }
     async connect() {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             if (this.connectListener) {
                 this.client.removeListener('connect', this.connectListener);
             }

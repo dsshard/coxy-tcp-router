@@ -1,6 +1,7 @@
 import { createServer, Server, Socket } from 'net'
-import { Middleware, Pipeline } from './pipeline'
 import crypto, { DiffieHellman } from 'crypto'
+
+import { Middleware, Pipeline } from './pipeline'
 import { BaseInterface } from './interface'
 import { sha256 } from './crypto'
 
@@ -32,11 +33,11 @@ declare module 'net' {
 }
 
 export class TcpRouter extends BaseInterface {
-  private server: Server;
-  private options: TcpRouterOptions;
+  private server: Server
+  private options: TcpRouterOptions
   private routers: Pipeline<any>[] = []
-  private connectionsCount: number;
-  private dh: DiffieHellman;
+  private connectionsCount: number
+  private dh: DiffieHellman
 
   constructor (options: TcpRouterOptions) {
     super()
@@ -119,11 +120,13 @@ export class TcpRouter extends BaseInterface {
       this.emit('data', request?.body)
     } catch (error) {
       this.emit('error:parse', socketData.toString())
+      // eslint-disable-next-line no-console
       console.error('Failed', error.message)
       return
     }
 
     if (!request) {
+      // eslint-disable-next-line no-console
       console.error('Failed', 'request is empty')
       return
     }

@@ -9,19 +9,24 @@ const router = new TcpRouter({
 })
 
 router.on('connect', (socket) => {
+  // eslint-disable-next-line no-console
   console.log('connect', socket.address())
 })
 router.on('close', (socket) => {
+  // eslint-disable-next-line no-console
   console.log('close', socket.address())
 })
 router.on('error:whitelist', (socket) => {
+  // eslint-disable-next-line no-console
   console.log(socket.address())
 })
 router.on('error:maxConnections', (socket) => {
+  // eslint-disable-next-line no-console
   console.log(socket.address())
 })
 
 router.use('/app/test', async function (ctx, next) {
+  // eslint-disable-next-line no-console
   console.log(ctx.request)
   ctx.body = 'test'
   next()

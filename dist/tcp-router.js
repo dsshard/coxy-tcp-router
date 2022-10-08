@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TcpRouter = void 0;
 const net_1 = require("net");
-const pipeline_1 = require("./pipeline");
 const crypto_1 = __importDefault(require("crypto"));
+const pipeline_1 = require("./pipeline");
 const interface_1 = require("./interface");
 const crypto_2 = require("./crypto");
 class TcpRouter extends interface_1.BaseInterface {
