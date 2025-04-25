@@ -9,7 +9,7 @@ export default defineConfig({
   treeshake: true,
   splitting: false,
   minify: true,
-  sourcemap: false,
+  sourcemap: true,
   esbuildOptions(o) {
     o.drop = ['console', 'debugger']
     o.minifyIdentifiers = true
