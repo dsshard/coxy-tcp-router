@@ -1,30 +1,20 @@
-import { Aes256 } from '@coxy/aes-256'
-
 import EventEmitter from 'events'
-import { Socket } from 'net'
 
-export class BaseInterface extends EventEmitter {
-  private aes: Aes256
-  constructor () {
-    super()
-    this.aes = new Aes256('5c5376807c3259c4cc6bdae907c1167686bdae905ac531163259c4cc7c3259c4cc')
-  }
+import { encrypt, decrypt } from './utils/encryptor'
 
-  protected getSecretKey (socket?: Socket): string {
-    return ''
-  }
-
-  protected encrypt (body: string, socket?: Socket): string {
-    body = this.aes.encrypt(body, this.getSecretKey(socket))
-    return body
-  }
-
-  protected decrypt<T> (body: string, socket?: Socket): T {
-    try {
-      body = this.aes.decrypt(body, this.getSecretKey(socket))
-      return JSON.parse(body)
-    } catch (ignore) {
-      return null
+export abstract class BaseInterface extends EventEmitter {
+  protected abstract getSecret(sock?: unknown): string
+  protected encrypt(data: string, sock?: unknown) {
+    if (!this.getSecret(sock)) {
+      return data
     }
+    return encrypt(data, this.getSecret(sock))
+  }
+
+  protected decrypt<T = unknown>(payload: string, sock?: unknown): T {
+    if (!this.getSecret(sock)) {
+      return JSON.parse(payload)
+    }
+    return JSON.parse(decrypt(payload, this.getSecret(sock))) as T
   }
 }

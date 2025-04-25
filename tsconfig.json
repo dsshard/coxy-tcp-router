@@ -1,4 +1,8 @@
 {
+  "ts-node": {
+    "cacheDirectory": ".tscache",
+    "transpileOnly": true
+  },
   "compilerOptions": {
     "esModuleInterop": true,
     "declaration": true,
@@ -6,20 +10,24 @@
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es2017",
+    "target": "ESNext",
     "sourceMap": false,
-    "composite": true,
-    "incremental": true,
+    "composite": false,
+    "incremental": false,
     "noUnusedLocals": true,
+    "skipLibCheck": true,
     "noUnusedParameters": false,
     "resolveJsonModule": true,
-    "outDir": "./dist",
+    "outDir": "dist",
     "baseUrl": "./src",
-    "rootDir": "./src"
   },
-  "include": ["./src/**/*"],
+  "include": [
+    "./src/**/*",
+    "./src/**/*.json",
+    "./*.d.ts",
+    "./package.json"
+  ],
   "exclude": [
-    "**/*.d.ts",
     "./node_modules",
     "dist"
   ]

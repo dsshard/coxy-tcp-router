@@ -1,9 +1,12 @@
-import { TcpClient } from '../tcp-client'
+// client.ts
 
-async function run () {
+import { TcpClient } from '../client'
+
+async function run() {
   const client = new TcpClient({
     port: 1337,
-    secret: 'supersecretstring'
+    secret: 'supersecretstring',
+    name: 'Tcp-name-test-client',
   })
   client.on('close', () => {
     console.log('close')
@@ -16,8 +19,10 @@ async function run () {
   })
 
   await client.connect()
-  const response = await client.send('/app/test', { test: 123 })
-  console.log(response)
+  setInterval(async () => {
+    const response = await client.send('/app/test', { test: 123 })
+    console.log(response)
+  }, 500)
 }
 
 run()

@@ -1,2 +1,2 @@
-export { TcpRouter } from './tcp-router'
-export { TcpClient } from './tcp-client'
+export { TcpServer } from './server'
+export { TcpClient } from './client'
