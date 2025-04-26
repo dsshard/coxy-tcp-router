@@ -10,7 +10,8 @@
   "javascript": {
     "formatter": {
       "quoteStyle": "single",
-      "semicolons": "asNeeded"
+      "semicolons": "asNeeded",
+      "trailingCommas": "all"
     }
   },
   "linter": {
@@ -22,8 +23,7 @@
   "json": {
     "formatter": {
       "indentStyle": "space",
-      "indentWidth": 2,
-      "trailingCommas": "none"
+      "indentWidth": 2
     },
     "linter": {
       "enabled": true
