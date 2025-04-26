@@ -170,6 +170,7 @@ export class TcpClient extends BaseInterface {
   }
 
   public close() {
+    clearInterval(this.iTimer)
     this.mClosed = true
     if (this.rTimer) {
       clearTimeout(this.rTimer)
