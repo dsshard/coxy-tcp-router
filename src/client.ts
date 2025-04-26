@@ -3,6 +3,7 @@ import { Socket } from 'net'
 
 import { BaseInterface } from './interface'
 import { HandshakeInitialBody, RequestBody, ResponseBody } from './server'
+import { checkInternet } from './utils/check-connection'
 import { createDefer } from './utils/defer'
 
 export interface TcpClientOptions {
@@ -12,8 +13,7 @@ export interface TcpClientOptions {
   name?: string
   autoReconnect?: boolean
   timeoutReconnect?: number
-  requestTimeout?: number
-  maxPending?: number
+  keepAlive?: boolean
 }
 
 type Pending<T> = { ts: number; defer: ReturnType<typeof createDefer<T>> }
@@ -23,14 +23,15 @@ export class TcpClient extends BaseInterface {
     return `${this.opt.secret}${this.secret}`
   }
 
-  private sock!: Socket
+  public sock!: Socket
   private readonly opt: TcpClientOptions
   private ecdh = crypto.createECDH('prime256v1')
   private secret = ''
   private buf = Buffer.alloc(0)
-  private pending: Record<string, Pending<unknown>> = {}
+  public pending: Record<string, Pending<unknown>> = {}
   private mClosed = false
   private rTimer: NodeJS.Timeout | null = null
+  private iTimer: NodeJS.Timeout | null = null
   private connected = createDefer<boolean>()
   private closed = true
 
@@ -44,7 +45,13 @@ export class TcpClient extends BaseInterface {
     this.sock = new Socket()
     this.buf = Buffer.alloc(0)
 
-    this.sock.on('error', (err) => this.emit('error', err))
+    this.sock.on('error', (err: Error & { code: string }) => {
+      if (err.code === 'ECONNRESET') {
+        this.onClose()
+        return
+      }
+      this.emit('error', err)
+    })
     this.sock.on('close', () => this.onClose())
     this.sock.once('connect', () => this.sendHandshake())
     this.sock.on('data', (chunk) => this.onData(chunk))
@@ -110,27 +117,55 @@ export class TcpClient extends BaseInterface {
   }
 
   // ---------- public API ----------
-  public connect(): Promise<boolean> {
+  public async connect(): Promise<boolean> {
     if (!this.closed) return this.connected
     this.closed = false
     this.mClosed = false
     this.connected = createDefer<boolean>()
+
+    const status = await checkInternet()
+    if (!status) {
+      this.onClose()
+      return
+    }
+
     this.spawn()
     this.sock.connect(this.opt.port, this.opt.host)
-    return this.connected
+    await this.connected
+    if (this.opt.keepAlive) {
+      this.sock.setKeepAlive(true, 1000) // 10 секунд
+    }
+
+    clearInterval(this.iTimer)
+    this.iTimer = setInterval(() => {
+      checkInternet().then((status) => {
+        this.emit('internet', status)
+        if (!status) {
+          this.onClose()
+        }
+      })
+    }, 5000)
+    return true
   }
 
   private onClose() {
+    clearInterval(this.iTimer)
     this.closed = true
     this.secret = ''
-    this.emit('close')
 
-    if (this.mClosed || !this.opt.autoReconnect) return
+    Object.keys(this.pending).forEach((uuid) => {
+      const rec = this.pending[uuid]
+      rec.defer.reject(new Error('Client closed'))
+      delete this.pending[uuid]
+    })
 
     if (this.rTimer) return // already waiting
+    if (this.mClosed || !this.opt.autoReconnect) return
+    this.emit('close')
+
     this.rTimer = setTimeout(() => {
       this.rTimer = null
-      this.spawn()
+      void this.connect()
     }, this.opt.timeoutReconnect)
   }
 
@@ -140,7 +175,11 @@ export class TcpClient extends BaseInterface {
       clearTimeout(this.rTimer)
       this.rTimer = null
     }
-    if (this.sock) this.sock.destroy()
+
+    if (this.sock) {
+      this.sock.removeAllListeners()
+      this.sock.destroy()
+    }
     this.closed = true
   }
 
@@ -148,10 +187,6 @@ export class TcpClient extends BaseInterface {
     // если сокет закрыт (сервер упал/рестарт), переподключаемся принудительно
     if (this.closed && !this.mClosed) {
       await this.connect()
-    }
-
-    if (Object.keys(this.pending).length >= (this.opt.maxPending ?? 500)) {
-      throw new Error('Too many pending requests')
     }
 
     const uuid = crypto.randomUUID()

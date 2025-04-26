@@ -32,17 +32,6 @@ test('unknown route returns error', async () => {
   server.close()
 })
 
-test('throws when pending queue overflow', async () => {
-  const server = await createServer()
-  const client = new TcpClient({ port: PORT, secret: SECRET, maxPending: 2 })
-  await client.connect()
-  client.send('/echo', { a: 1 })
-  client.send('/echo', { a: 2 })
-  await expect(client.send('/echo', { a: 3 })).rejects.toThrow('Too many pending requests')
-  client.close()
-  server.close()
-})
-
 test('check server down', async () => {
   const server = await createServer()
   const client = new TcpClient({ port: PORT, secret: SECRET })

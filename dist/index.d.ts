@@ -52,6 +52,11 @@ declare class TcpServer extends BaseInterface {
     use<Q = unknown, S = unknown>(r: string, ...mw: Middleware<Context<Q, S>>[]): void;
 }
 
+declare function createDefer<T>(): Promise<T> & {
+    resolve: (value: T | PromiseLike<T>) => void;
+    reject: (reason?: unknown) => void;
+};
+
 interface TcpClientOptions {
     port: number;
     host?: string;
@@ -59,19 +64,23 @@ interface TcpClientOptions {
     name?: string;
     autoReconnect?: boolean;
     timeoutReconnect?: number;
-    requestTimeout?: number;
-    maxPending?: number;
+    keepAlive?: boolean;
 }
+type Pending<T> = {
+    ts: number;
+    defer: ReturnType<typeof createDefer<T>>;
+};
 declare class TcpClient extends BaseInterface {
     protected getSecret(): string;
-    private sock;
+    sock: Socket;
     private readonly opt;
     private ecdh;
     private secret;
     private buf;
-    private pending;
+    pending: Record<string, Pending<unknown>>;
     private mClosed;
     private rTimer;
+    private iTimer;
     private connected;
     private closed;
     constructor(opt: TcpClientOptions);
