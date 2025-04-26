@@ -1,9 +1,9 @@
-import crypto from 'crypto'
-import { createServer, Server, Socket } from 'net'
+import crypto from 'node:crypto'
+import { type Server, type Socket, createServer } from 'node:net'
 
 import { BaseInterface } from './interface'
 import { createDefer } from './utils/defer'
-import { Context, Middleware, Pipeline } from './utils/pipeline'
+import { type Context, type Middleware, Pipeline } from './utils/pipeline'
 
 export interface TcpRouterOptions {
   port: number
@@ -133,6 +133,7 @@ export class TcpServer extends BaseInterface {
 
   // ---------------- length‑prefix framed stream ----------------
   private readFrames(s: Socket, chunk: Buffer) {
+    // biome-ignore lint/style/noNonNullAssertion: <explanation>
     s._buf = Buffer.concat([s._buf!, chunk])
     while (s._buf.length >= 4) {
       const len = s._buf.readUInt32BE(0)

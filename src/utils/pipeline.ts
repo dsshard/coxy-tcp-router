@@ -4,6 +4,7 @@ export interface Context<TReq, TRes> {
   rout: string
   body?: TRes
 }
+
 export type Middleware<T> = (ctx: T, next: Next) => Promise<void> | void
 export interface Pipeline<TC, TR> {
   push: (...mw: Middleware<TC>[]) => void
@@ -21,7 +22,9 @@ export function Pipeline<TC, TR>(...mw: Middleware<TC>[]): Pipeline<TC, TR> {
       if (fn) await fn(ctx, () => runner(idx + 1))
     }
     await runner(0)
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     if ((ctx as any).body === undefined) throw new Error('Pipeline did not set ctx.body')
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     return { body: (ctx as any).body as TR }
   }
   return { push, execute }

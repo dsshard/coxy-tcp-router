@@ -1,8 +1,8 @@
-import crypto from 'crypto'
-import { Socket } from 'net'
+import crypto from 'node:crypto'
+import { Socket } from 'node:net'
 
 import { BaseInterface } from './interface'
-import { HandshakeInitialBody, RequestBody, ResponseBody } from './server'
+import type { HandshakeInitialBody, RequestBody, ResponseBody } from './server'
 import { checkInternet } from './utils/check-connection'
 import { createDefer } from './utils/defer'
 
@@ -153,11 +153,11 @@ export class TcpClient extends BaseInterface {
     this.closed = true
     this.secret = ''
 
-    Object.keys(this.pending).forEach((uuid) => {
+    for (const uuid of Object.keys(this.pending)) {
       const rec = this.pending[uuid]
       rec.defer.reject(new Error('Client closed'))
       delete this.pending[uuid]
-    })
+    }
 
     if (this.rTimer) return // already waiting
     if (this.mClosed || !this.opt.autoReconnect) return

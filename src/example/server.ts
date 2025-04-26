@@ -27,7 +27,7 @@ router.on('error:maxConnections', (socket) => {
   console.log(socket.address())
 })
 
-router.use('/app/test', async function (ctx, next) {
+router.use('/app/test', async (ctx, next) => {
   ctx.body = `test${Math.random()}`
   next()
 })

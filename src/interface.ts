@@ -1,6 +1,6 @@
-import EventEmitter from 'events'
+import EventEmitter from 'node:events'
 
-import { encrypt, decrypt } from './utils/encryptor'
+import { decrypt, encrypt } from './utils/encryptor'
 
 export abstract class BaseInterface extends EventEmitter {
   protected abstract getSecret(sock?: unknown): string

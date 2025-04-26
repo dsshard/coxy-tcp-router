@@ -1,5 +1,5 @@
-import { Socket } from 'net';
-import EventEmitter from 'events';
+import { Socket } from 'node:net';
+import EventEmitter from 'node:events';
 
 declare abstract class BaseInterface extends EventEmitter {
     protected abstract getSecret(sock?: unknown): string;

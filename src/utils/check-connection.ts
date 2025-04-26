@@ -1,4 +1,4 @@
-import { connect } from 'net'
+import { connect } from 'node:net'
 
 export function checkInternet(): Promise<boolean> {
   return new Promise((resolve) => {
@@ -7,19 +7,18 @@ export function checkInternet(): Promise<boolean> {
       resolve(true)
     })
 
-    socket.on('connect', () => {
-      socket.destroy()
-      resolve(true)
-    })
-
-    socket.on('error', () => {
-      socket.destroy()
-      resolve(false)
-    })
-
-    socket.on('timeout', () => {
-      socket.destroy()
-      resolve(false)
-    })
+    socket
+      .on('connect', () => {
+        socket.destroy()
+        resolve(true)
+      })
+      .on('error', () => {
+        socket.destroy()
+        resolve(false)
+      })
+      .on('timeout', () => {
+        socket.destroy()
+        resolve(false)
+      })
   })
 }
