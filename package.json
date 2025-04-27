@@ -18,13 +18,11 @@
     "npm": "please-use-yarn",
     "yarn": "=1"
   },
-  "browserslist": [
-    "> 1%, not dead"
-  ],
+  "browserslist": ["> 1%, not dead"],
   "sideEffects": false,
   "engineStrict": true,
   "repository": {
-    "url": "https://github.com/dsshard/tcp-router"
+    "url": "https://github.com/dsshard/coxy-tcp-router"
   },
   "keywords": [],
   "author": "Steven Green",
